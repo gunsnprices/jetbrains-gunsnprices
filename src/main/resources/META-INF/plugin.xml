@@ -9,7 +9,7 @@
 without leaving the editor. Works offline.</p>
 
 <p>Made for people who write scrapers, product feeds, imports and tests for gun and ammo stores, and who deal with
-titles like <code>G19 GEN5 9MM 15RD FS</code> or <code>Federal 308 150gr PowerShok 20rds</code>.</p>
+titles like <code>9MM LUGER 115GR FMJ 50RD BOX</code> or <code>308 WIN 150GR SP 20RDS</code>.</p>
 
 <ul>
   <li><b>Parse Gun or Ammo Title</b>: put the caret in a string literal, on a line, or select text, and run it from
@@ -18,7 +18,7 @@ titles like <code>G19 GEN5 9MM 15RD FS</code> or <code>Federal 308 150gr PowerSh
   <li>Several selected lines are parsed into a table that can be copied as JSON or CSV. Plain lists, CSV/TSV rows,
     JSON lines and string arrays in code are read; a price in the same row gives the cost per round.</li>
   <li><b>Cost per Round</b>: enter a price and a round count, or a price and a title such as
-    "Winchester 9mm 115gr FMJ 1000 Round Case".</li>
+    "9mm 115gr FMJ 1000 Round Case".</li>
   <li><b>Normalize Caliber</b>: replaces caliber text with its standard name, for example "9mm Luger" with
     "9×19mm Parabellum" and "300 BLK" with ".300 AAC Blackout". 293 calibers.</li>
   <li><b>Caliber Lookup</b> tool window: search the caliber list by name or by the spellings stores use.</li>
@@ -32,6 +32,9 @@ default; turn them on in <i>Settings | Tools | Gun &amp; Ammo Title Parser</i>.<
 <a href="https://central.sonatype.com/artifact/com.gunsnprices/gunsnprices">gunsnprices</a> Java library, the title
 parser behind <a href="https://gunsnprices.com">GunsNPrices</a>, a price comparison site for US gun and ammo stores.
 Model dictionaries for 50 brands. Code: MIT. Model and caliber data: GunsNPrices, CC BY 4.0.</p>
+
+<p><a href="https://github.com/gunsnprices/jetbrains-gunsnprices">Source code</a> |
+<a href="https://github.com/gunsnprices/jetbrains-gunsnprices/issues">Issues</a> | app@gunsnprices.com</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>

@@ -199,8 +199,11 @@ JDK 21. The build downloads Gradle and IntelliJ IDEA Community 2024.3 (about 1 G
 ```bash
 ./gradlew test            # unit tests and headless platform tests
 ./gradlew buildPlugin     # build/distributions/gun-title-parser-<version>.zip
-./gradlew verifyPlugin    # IntelliJ Plugin Verifier: IDEA 2024.3.7 and IntelliJ IDEA 2026.3
+./gradlew verifyPlugin    # IntelliJ Plugin Verifier: IDEA Community 2024.3.7 and IntelliJ IDEA 2026.3
 ./gradlew runIde          # try it in a sandbox IDE
+
+# use an IDE that is already on disk for the second verifier target, and run the tests on it
+./gradlew verifyPlugin testIdeLatest -PverifyIdePath="/Applications/IntelliJ IDEA.app"
 ```
 
 The plugin is written in Java and uses only `com.intellij.modules.platform`, so it runs in every IntelliJ-based IDE.
