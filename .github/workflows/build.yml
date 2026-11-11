@@ -1,0 +1,63 @@
+# Build, test and verify the plugin on every push to main and on pull requests.
+# Based on the IntelliJ Platform Plugin Template workflow.
+name: Build
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Test and build
+        run: ./gradlew test buildPlugin verifyPluginStructure
+      - name: Upload test reports
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: tests-result
+          path: build/reports/tests
+      - name: Upload plugin
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-distribution
+          path: build/distributions/*.zip
+
+  verify:
+    name: Plugin Verifier
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Maximize build space
+        uses: jlumbroso/free-disk-space@v2.0.0
+        with:
+          preinstalled-runtimes: false
+          large-packages: false
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+      - name: Run Plugin Verifier
+        run: ./gradlew verifyPlugin
+      - name: Upload Plugin Verifier reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pluginVerifier-result
+          path: build/reports/pluginVerifier

@@ -1,0 +1,80 @@
+<!-- Plugin Configuration File: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin url="https://gunsnprices.com">
+    <id>com.gunsnprices.gun-title-parser</id>
+    <name>Gun &amp; Ammo Title Parser</name>
+    <vendor email="app@gunsnprices.com" url="https://gunsnprices.com">GunsNPrices</vendor>
+
+    <description><![CDATA[
+<p>Parse gun and ammo product titles into brand, model, caliber, magazine capacity, barrel length and rounds per box,
+without leaving the editor. Works offline.</p>
+
+<p>Made for people who write scrapers, product feeds, imports and tests for gun and ammo stores, and who deal with
+titles like <code>G19 GEN5 9MM 15RD FS</code> or <code>Federal 308 150gr PowerShok 20rds</code>.</p>
+
+<ul>
+  <li><b>Parse Gun or Ammo Title</b>: put the caret in a string literal, on a line, or select text, and run it from
+    the editor context menu (<i>GunsNPrices</i>) or with Alt+Enter. A popup shows the brand, model, generation,
+    calibers, capacity, barrel length, rounds per box and cost per round. <i>Copy as JSON</i> copies the result.</li>
+  <li>Several selected lines are parsed into a table that can be copied as JSON or CSV. Plain lists, CSV/TSV rows,
+    JSON lines and string arrays in code are read; a price in the same row gives the cost per round.</li>
+  <li><b>Cost per Round</b>: enter a price and a round count, or a price and a title such as
+    "Winchester 9mm 115gr FMJ 1000 Round Case".</li>
+  <li><b>Normalize Caliber</b>: replaces caliber text with its standard name, for example "9mm Luger" with
+    "9×19mm Parabellum" and "300 BLK" with ".300 AAC Blackout". 293 calibers.</li>
+  <li><b>Caliber Lookup</b> tool window: search the caliber list by name or by the spellings stores use.</li>
+</ul>
+
+<p>The plugin reads only the text you select or put the caret on. It makes no network requests, collects no
+telemetry and needs no account. Links from calibers to their price comparison pages on GunsNPrices are off by
+default; turn them on in <i>Settings | Tools | Gun &amp; Ammo Title Parser</i>.</p>
+
+<p>Parsing is done by the open source
+<a href="https://central.sonatype.com/artifact/com.gunsnprices/gunsnprices">gunsnprices</a> Java library, the title
+parser behind <a href="https://gunsnprices.com">GunsNPrices</a>, a price comparison site for US gun and ammo stores.
+Model dictionaries for 50 brands. Code: MIT. Model and caliber data: GunsNPrices, CC BY 4.0.</p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                parentId="tools"
+                id="com.gunsnprices.ide.settings"
+                instance="com.gunsnprices.ide.GunsNPricesConfigurable"
+                displayName="Gun &amp; Ammo Title Parser"/>
+        <toolWindow
+                id="Caliber Lookup"
+                anchor="right"
+                icon="com.gunsnprices.ide.GunsNPricesIcons.CALIBER_LOOKUP"
+                factoryClass="com.gunsnprices.ide.CaliberLookupToolWindowFactory"
+                doNotActivateOnStart="true"/>
+        <intentionAction>
+            <className>com.gunsnprices.ide.ParseTitleIntention</className>
+            <category>GunsNPrices</category>
+        </intentionAction>
+    </extensions>
+
+    <actions>
+        <group id="GunsNPrices.Menu" text="GunsNPrices" description="Gun and ammo title tools" popup="true">
+            <action id="GunsNPrices.ParseTitle"
+                    class="com.gunsnprices.ide.ParseTitleAction"
+                    text="Parse Gun or Ammo Title"
+                    description="Show the brand, model, caliber, capacity, barrel length and rounds per box of the title at the caret or of the selected lines"/>
+            <action id="GunsNPrices.CostPerRound"
+                    class="com.gunsnprices.ide.CostPerRoundAction"
+                    text="Cost per Round..."
+                    description="Compute the cost per round from a price and a round count or a title"/>
+            <action id="GunsNPrices.NormalizeCaliber"
+                    class="com.gunsnprices.ide.NormalizeCaliberAction"
+                    text="Normalize Caliber"
+                    description="Replace the selected caliber text with its standard name"/>
+            <separator/>
+            <action id="GunsNPrices.CaliberLookup"
+                    class="com.gunsnprices.ide.CaliberLookupAction"
+                    text="Caliber Lookup"
+                    description="Search the caliber list by name or by the spellings stores use"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
+    </actions>
+</idea-plugin>
