@@ -4,10 +4,12 @@ import com.gunsnprices.ide.core.ParsedTitle;
 import com.gunsnprices.ide.core.Prices;
 import com.gunsnprices.ide.core.TextSegments;
 import com.gunsnprices.ide.core.Titles;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.fileTypes.PlainTextFileType;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiComment;
@@ -51,6 +53,14 @@ public final class EditorTargets {
     }
 
     private static final int MAX_LINE = 4000;
+
+    /**
+     * Runs {@code c} in a read action. {@code Application.runReadAction} exists in every supported version and,
+     * unlike {@code ReadAction.compute}, is not deprecated in 2026.3.
+     */
+    public static <T> T read(@NotNull Computable<T> c) {
+        return ApplicationManager.getApplication().runReadAction(c);
+    }
 
     /** The text to parse for an action: the first candidate with a recognized title, or the selection. */
     public static @Nullable Found titleAt(@NotNull Editor editor, @Nullable PsiFile file) {

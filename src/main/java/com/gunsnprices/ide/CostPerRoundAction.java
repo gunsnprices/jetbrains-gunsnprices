@@ -5,7 +5,6 @@ import com.gunsnprices.ide.core.Prices;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.psi.PsiFile;
@@ -26,7 +25,7 @@ public final class CostPerRoundAction extends DumbAwareAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         PsiFile file = e.getData(CommonDataKeys.PSI_FILE);
-        String[] prefill = editor == null ? new String[] {"", ""} : ReadAction.compute(() -> prefill(editor, file));
+        String[] prefill = editor == null ? new String[] {"", ""} : EditorTargets.read(() -> prefill(editor, file));
         new CostPerRoundDialog(e.getProject(), prefill[0], prefill[1]).show();
     }
 

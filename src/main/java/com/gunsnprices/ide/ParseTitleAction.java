@@ -5,7 +5,6 @@ import com.gunsnprices.ide.core.Titles;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.progress.ProgressManager;
@@ -48,7 +47,7 @@ public final class ParseTitleAction extends DumbAwareAction {
             parseLines(project, editor, file);
             return;
         }
-        EditorTargets.Found found = ReadAction.compute(() -> EditorTargets.titleAt(editor, file));
+        EditorTargets.Found found = EditorTargets.read(() -> EditorTargets.titleAt(editor, file));
         if (found == null) {
             Feedback.info(editor, "No gun or ammo title here. Select a title, or put the caret in a string or "
                     + "on a line that holds one.");

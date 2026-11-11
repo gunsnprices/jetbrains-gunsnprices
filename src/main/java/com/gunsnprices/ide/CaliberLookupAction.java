@@ -3,7 +3,6 @@ package com.gunsnprices.ide;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
@@ -34,7 +33,7 @@ public final class CaliberLookupAction extends DumbAwareAction {
         }
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         PsiFile file = e.getData(CommonDataKeys.PSI_FILE);
-        String query = editor == null ? null : ReadAction.compute(() -> {
+        String query = editor == null ? null : EditorTargets.read(() -> {
             EditorTargets.Target t = EditorTargets.valueAt(editor, file, editor.getCaretModel().getOffset());
             return t == null || t.text().isBlank() || t.text().length() > MAX_QUERY || t.text().contains("\n")
                     ? null : t.text().strip();

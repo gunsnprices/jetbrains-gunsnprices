@@ -72,6 +72,15 @@ intellijPlatform {
     }
 }
 
+// ./gradlew testIdeLatest -PverifyIdePath=/path/to/IDE runs the tests on that IDE (for example the latest release)
+// instead of the 2024.3 platform the plugin is built against.
+providers.gradleProperty("verifyIdePath").orNull?.let { idePath ->
+    intellijPlatformTesting.testIde.register("testIdeLatest") {
+        localPath = file(idePath)
+        testFramework(TestFrameworkType.Platform)
+    }
+}
+
 changelog {
     repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
 }

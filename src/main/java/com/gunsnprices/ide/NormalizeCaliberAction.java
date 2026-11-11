@@ -4,7 +4,6 @@ import com.gunsnprices.ide.core.Titles;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Document;
@@ -78,7 +77,7 @@ public final class NormalizeCaliberAction extends DumbAwareAction {
         boolean ascii = GunsNPricesSettings.getInstance().asciiCaliberNames();
         Summary summary = new Summary(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         List<Edit> edits = new ArrayList<>();
-        List<EditorTargets.Target> targets = ReadAction.compute(() -> targets(editor, file));
+        List<EditorTargets.Target> targets = EditorTargets.read(() -> targets(editor, file));
         if (targets.isEmpty()) {
             Feedback.info(editor, "Select the caliber text to normalize, for example 9mm Luger.");
             return;

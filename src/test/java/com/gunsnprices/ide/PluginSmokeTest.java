@@ -7,7 +7,6 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
@@ -100,7 +99,7 @@ public class PluginSmokeTest extends BasePlatformTestCase {
         myFixture.configureByText("feed.json", "{\"title\": \"Sig Sauer P365 XL 9mm 3.7\\\" 12+1 Optic <caret>Ready\"}");
         IntentionAction action = myFixture.getAvailableIntention("Parse gun or ammo title");
         assertNotNull(action);
-        IntentionPreviewInfo preview = ReadAction.compute(() ->
+        IntentionPreviewInfo preview = EditorTargets.read(() ->
                 action.generatePreview(getProject(), myFixture.getEditor(), myFixture.getFile()));
         assertTrue(preview instanceof IntentionPreviewInfo.Html);
         String html = ((IntentionPreviewInfo.Html) preview).content().toString();
@@ -132,7 +131,7 @@ public class PluginSmokeTest extends BasePlatformTestCase {
 
     public void testCostPerRoundPrefill() {
         myFixture.configureByText("t.txt", "Winchester 9mm 115gr FMJ 1000 Round <caret>Case - $289.99\n");
-        String[] prefill = ReadAction.compute(() -> CostPerRoundAction.prefill(myFixture.getEditor(),
+        String[] prefill = EditorTargets.read(() -> CostPerRoundAction.prefill(myFixture.getEditor(),
                 myFixture.getFile()));
         assertEquals("289.99", prefill[0]);
         assertEquals("Winchester 9mm 115gr FMJ 1000 Round Case", prefill[1]);
