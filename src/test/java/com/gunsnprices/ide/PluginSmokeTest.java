@@ -10,9 +10,13 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.intellij.ui.components.JBTextField;
+import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import java.awt.Insets;
 import java.util.List;
 
 /**
@@ -147,6 +151,28 @@ public class PluginSmokeTest extends BasePlatformTestCase {
         }
     }
 
+    /** At the dialog's default size both fields get their preferred width and show the whole sample values. */
+    public void testCostPerRoundDialogFieldsFit() {
+        CostPerRoundDialog dialog = new CostPerRoundDialog(getProject(), "289.99", "9mm 115gr FMJ 1000 Round Case");
+        try {
+            JComponent panel = dialog.createCenterPanel();
+            assertNotNull(panel);
+            panel.setSize(panel.getPreferredSize());
+            panel.doLayout();
+            List<JBTextField> fields = UIUtil.findComponentsOfType(panel, JBTextField.class);
+            assertEquals(2, fields.size());
+            for (JBTextField f : fields) {
+                assertTrue(f.getText() + ": " + f.getWidth() + " < " + f.getPreferredSize().width,
+                        f.getWidth() >= f.getPreferredSize().width);
+                Insets in = f.getInsets();
+                int textWidth = f.getFontMetrics(f.getFont()).stringWidth(f.getText());
+                assertTrue(f.getText() + " does not fit", textWidth <= f.getWidth() - in.left - in.right);
+            }
+        } finally {
+            Disposer.dispose(dialog.getDisposable());
+        }
+    }
+
     public void testResultPopupContent() {
         ParsedTitle t = com.gunsnprices.ide.core.Titles.parse("Glock 19 Gen 5 MOS 9mm 4.02\" 15rd");
         JComponent panel = ResultPopups.titlePanel(t, new com.gunsnprices.ide.core.Output.Options(true, false),
@@ -179,5 +205,18 @@ public class PluginSmokeTest extends BasePlatformTestCase {
             c.disposeUIResources();
         }
         assertFalse("links are off by default", new GunsNPricesSettings.State().links);
+    }
+
+    /** The explanations wrap, so the page fits the Settings dialog without horizontal scrolling. */
+    public void testSettingsPageWraps() {
+        GunsNPricesConfigurable c = new GunsNPricesConfigurable();
+        try {
+            JComponent page = c.createComponent();
+            assertNotNull(page);
+            int width = page.getPreferredSize().width;
+            assertTrue("settings page is " + width + " px wide", width <= JBUI.scale(600));
+        } finally {
+            c.disposeUIResources();
+        }
     }
 }

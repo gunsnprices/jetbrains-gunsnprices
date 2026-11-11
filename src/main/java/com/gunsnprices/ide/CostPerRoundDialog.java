@@ -58,15 +58,15 @@ final class CostPerRoundDialog extends DialogWrapper {
         JBLabel hint = new JBLabel("Copy puts the cost per round (two decimals) on the clipboard.");
         hint.setForeground(UIUtil.getContextHelpForeground());
         hint.setComponentStyle(UIUtil.ComponentStyle.SMALL);
-        var panel = FormBuilder.createFormBuilder()
+        // No fixed width: the form takes the width its fields ask for, so both show their whole text when the
+        // dialog opens (a narrower fixed width made the layout fall back to the fields' minimum width).
+        return FormBuilder.createFormBuilder()
                 .addLabeledComponent("Price of the box or case:", price)
                 .addLabeledComponent("Rounds, or the product title:", rounds)
                 .addVerticalGap(JBUI.scale(8))
                 .addComponent(result)
                 .addComponent(hint)
                 .getPanel();
-        panel.setPreferredSize(JBUI.size(560, -1).withHeight(panel.getPreferredSize().height));
-        return panel;
     }
 
     @Override

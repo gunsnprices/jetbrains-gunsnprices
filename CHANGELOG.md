@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-11
+
+### Fixed
+
+- Cost per Round: the price and rounds fields opened only a few characters wide. They now show their whole text at the dialog's default size.
+- Settings | Tools | Gun & Ammo Title Parser: the explanation under each option was cut off on the right. It now wraps to fit the page.
+
 ## [0.1.0] - 2026-11-11
 
 ### Added

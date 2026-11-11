@@ -3,7 +3,7 @@ package com.gunsnprices.ide;
 import com.gunsnprices.GunsNPrices;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.util.text.HtmlChunk;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
@@ -50,11 +50,20 @@ public final class GunsNPricesConfigurable implements Configurable {
         return panel;
     }
 
+    /** Comment line length, in characters: about what the platform uses for comments under settings. */
+    private static final int COMMENT_LINE = 70;
+    private static final String AVERAGE_TEXT = "abcdefghijklmnopqrstuvwxyz ";
+
     private static JComponent withComment(JComponent box, String comment) {
-        JBLabel text = new JBLabel("<html>" + StringUtil.escapeXmlEntities(comment) + "</html>");
-        text.setAllowAutoWrapping(true);
+        JBLabel text = new JBLabel();
         text.setComponentStyle(UIUtil.ComponentStyle.SMALL);
         text.setForeground(UIUtil.getContextHelpForeground());
+        // A fixed line width makes the comment wrap, so the page is no wider than the Settings dialog and needs no
+        // horizontal scrolling. Without it the HTML label is one long line.
+        int width = text.getFontMetrics(text.getFont()).stringWidth(AVERAGE_TEXT) * COMMENT_LINE
+                / AVERAGE_TEXT.length();
+        text.setText(HtmlChunk.text(comment).wrapWith(HtmlChunk.div().attr("width", width)).wrapWith("html")
+                .toString());
         text.setBorder(JBUI.Borders.empty(2, 24, 6, 0));
         JPanel p = new JPanel(new BorderLayout());
         p.add(box, BorderLayout.NORTH);
